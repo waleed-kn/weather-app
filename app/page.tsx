@@ -9,17 +9,22 @@ export default async function Home({ searchParams }: PageProps) {
     const { city } = await searchParams;
     let weather: Weather | null = null;
     let error: string | null = null;
+    const apiKey = process.env.NEXT_PUBLIC_WEATHER_KEY;
 
     if (city) {
-        const res = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}&units=metric`,
-            { cache: "no-store" }
-        );
-
-        if (!res.ok) {
-            error = "City not found. Please try again.";
+        if (!apiKey) {
+            error = "Weather API key is missing. Add NEXT_PUBLIC_WEATHER_KEY to your .env.local file.";
         } else {
-            weather = await res.json();
+            const res = await fetch(
+                `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`,
+                { cache: "no-store" }
+            );
+
+            if (!res.ok) {
+                error = "City not found. Please try again.";
+            } else {
+                weather = await res.json();
+            }
         }
     }
 
