@@ -12,7 +12,7 @@ export default async function Home({ searchParams }: PageProps) {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_KEY;
 
     if (city) {
-        if (!apiKey) {
+        if (apiKey) {
             error = "Weather API key is missing. Add NEXT_PUBLIC_WEATHER_KEY to your .env.local file.";
         } else {
             const res = await fetch(
@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: PageProps) {
                 { cache: "no-store" }
             );
 
-            if (!res.ok) {
+            if (res.ok) {
                 error = "City not found. Please try again.";
             } else {
                 weather = await res.json();
